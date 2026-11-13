@@ -1,0 +1,460 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard | PDF Mentor{% endblock %}
+
+{% block page_heading %}Dashboard Overview{% endblock %}
+
+{% block breadcrumb %}Overview{% endblock %}
+
+
+{% block content %}
+
+<!-- =====================================
+     WELCOME SECTION
+===================================== -->
+
+<section class="admin-welcome">
+
+    <div class="welcome-content">
+
+        <span class="welcome-label">
+            <i class="bi bi-stars"></i>
+            ADMIN CONTROL CENTER
+        </span>
+
+        <h1>
+            Welcome back, {{ admin_user.full_name|default:"Admin" }}!
+        </h1>
+
+        <p>
+            Here's what's happening with your PDF Mentor platform today.
+            Manage users and monitor your platform from one place.
+        </p>
+
+        <div class="welcome-meta">
+            <span>
+                <i class="bi bi-calendar3"></i>
+                {{ current_time|date:"l, d F Y" }}
+            </span>
+
+            <span>
+                <i class="bi bi-clock"></i>
+                {{ current_time|date:"h:i A" }}
+            </span>
+        </div>
+
+    </div>
+
+    <div class="welcome-illustration">
+        <i class="bi bi-shield-lock-fill"></i>
+        <span class="illustration-circle circle-one"></span>
+        <span class="illustration-circle circle-two"></span>
+    </div>
+
+</section>
+
+
+<!-- =====================================
+     PAGE SECTION HEADING
+===================================== -->
+
+<div class="admin-section-heading">
+
+    <div>
+        <h4>Platform Overview</h4>
+        <p>Monitor your platform's user activity and account status.</p>
+    </div>
+
+    <span class="live-status">
+        <span></span>
+        Live Database Data
+    </span>
+
+</div>
+
+
+<!-- =====================================
+     STATISTICS CARDS
+===================================== -->
+
+<section class="admin-stats-grid">
+
+    <!-- TOTAL USERS -->
+    <div class="admin-stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon stat-icon-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <span class="stat-label">TOTAL USERS</span>
+        </div>
+
+        <div class="stat-value">
+            {{ total_users }}
+        </div>
+
+        <div class="stat-description">
+            <i class="bi bi-people"></i>
+            Registered user accounts
+        </div>
+
+    </div>
+
+
+    <!-- APPROVED USERS -->
+    <div class="admin-stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon stat-icon-green">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+
+            <span class="stat-label">APPROVED USERS</span>
+        </div>
+
+        <div class="stat-value">
+            {{ approved_users }}
+        </div>
+
+        <div class="stat-description">
+            <i class="bi bi-check-circle"></i>
+            Active approved accounts
+        </div>
+
+    </div>
+
+
+    <!-- PENDING USERS -->
+    <div class="admin-stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon stat-icon-orange">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <span class="stat-label">PENDING APPROVALS</span>
+        </div>
+
+        <div class="stat-value">
+            {{ pending_users }}
+        </div>
+
+        <div class="stat-description">
+            <i class="bi bi-clock-history"></i>
+            Waiting for admin approval
+        </div>
+
+    </div>
+
+
+    <!-- INACTIVE USERS -->
+    <div class="admin-stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon stat-icon-red">
+                <i class="bi bi-person-x-fill"></i>
+            </div>
+
+            <span class="stat-label">INACTIVE USERS</span>
+        </div>
+
+        <div class="stat-value">
+            {{ inactive_users }}
+        </div>
+
+        <div class="stat-description">
+            <i class="bi bi-slash-circle"></i>
+            Disabled user accounts
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL ADMINS -->
+    <div class="admin-stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon stat-icon-purple">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+
+            <span class="stat-label">TOTAL ADMINS</span>
+        </div>
+
+        <div class="stat-value">
+            {{ total_admins }}
+        </div>
+
+        <div class="stat-description">
+            <i class="bi bi-shield-check"></i>
+            Superuser administrators
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================
+     MAIN DASHBOARD GRID
+===================================== -->
+
+<div class="admin-dashboard-grid">
+
+
+    <!-- =================================
+         RECENT REGISTRATIONS
+    ================================== -->
+
+    <section class="admin-panel recent-users-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h5>Recent Registrations</h5>
+                <p>Latest users who registered on the platform.</p>
+            </div>
+
+            <a href="{% url 'admin_users' %}" class="panel-action">
+                Manage Users
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table admin-users-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>USER</th>
+                        <th>MOBILE NUMBER</th>
+                        <th>REGISTRATION DATE</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for user in recent_users %}
+
+                    <tr>
+
+                        <!-- USER -->
+                        <td>
+
+                            <div class="table-user">
+
+                                <div class="table-user-avatar">
+                                    {{ user.full_name|first|upper }}
+                                </div>
+
+                                <div>
+                                    <strong>{{ user.full_name }}</strong>
+                                    <small>User Account</small>
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- MOBILE -->
+                        <td>
+                            <span class="mobile-number">
+                                {{ user.mobile_number }}
+                            </span>
+                        </td>
+
+
+                        <!-- DATE -->
+                        <td>
+                            <span class="registration-date">
+                                {{ user.date_joined|date:"d M Y" }}
+                            </span>
+                        </td>
+
+
+                        <!-- STATUS -->
+                        <td>
+
+                            {% if not user.is_active %}
+
+                                <span class="user-status status-inactive">
+                                    <span></span>
+                                    Inactive
+                                </span>
+
+                            {% elif user.is_approved %}
+
+                                <span class="user-status status-approved">
+                                    <span></span>
+                                    Approved
+                                </span>
+
+                            {% else %}
+
+                                <span class="user-status status-pending">
+                                    <span></span>
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4">
+
+                            <div class="empty-users">
+
+                                <div class="empty-users-icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+
+                                <h6>No registrations yet</h6>
+
+                                <p>
+                                    New user registrations will appear here.
+                                </p>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================
+         QUICK ACTIONS
+    ================================== -->
+
+    <section class="admin-panel quick-actions-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h5>Quick Actions</h5>
+                <p>Access your administrative tools.</p>
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions-list">
+
+            <!-- MANAGE USERS -->
+            <a href="{% url 'admin_users' %}" class="quick-action-item">
+
+                <div class="quick-action-icon action-blue">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div class="quick-action-info">
+                    <strong>Manage Users</strong>
+                    <small>View and manage user accounts.</small>
+                </div>
+
+                <i class="bi bi-chevron-right action-arrow"></i>
+
+            </a>
+
+
+            <!-- APPROVALS -->
+            <a href="{% url 'admin_users' %}" class="quick-action-item">
+
+                <div class="quick-action-icon action-orange">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+
+                <div class="quick-action-info">
+                    <strong>Review Registrations</strong>
+                    <small>
+                        {{ pending_users }} account(s) awaiting approval.
+                    </small>
+                </div>
+
+                <i class="bi bi-chevron-right action-arrow"></i>
+
+            </a>
+
+
+            <!-- DJANGO ADMIN -->
+            <a href="{% url 'admin:index' %}" class="quick-action-item">
+
+                <div class="quick-action-icon action-purple">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+
+                <div class="quick-action-info">
+                    <strong>Django Administration</strong>
+                    <small>Open the Django administration panel.</small>
+                </div>
+
+                <i class="bi bi-chevron-right action-arrow"></i>
+
+            </a>
+
+
+            <!-- PDF MANAGEMENT -->
+            <a href="{% url 'admin_pdf_list' %}" class="quick-action-item">
+
+                <div class="quick-action-icon action-green">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                </div>
+
+                <div class="quick-action-info">
+                    <strong>PDF Management</strong>
+                    <small>Upload, manage and assign PDF documents.</small>
+                </div>
+
+                <i class="bi bi-chevron-right action-arrow"></i>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================
+     ADMIN INFORMATION
+===================================== -->
+
+<section class="admin-bottom-info">
+
+    <div class="bottom-info-icon">
+        <i class="bi bi-shield-check"></i>
+    </div>
+
+    <div>
+        <strong>Platform Administration</strong>
+
+        <p>
+            You are accessing the PDF Mentor administrative workspace.
+            Keep account permissions and user information secure.
+        </p>
+    </div>
+
+</section>
+
+{% endblock %}

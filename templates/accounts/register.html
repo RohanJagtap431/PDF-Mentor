@@ -1,0 +1,581 @@
+
+{% extends "base.html" %}
+
+{% block title %}Register | PDF Mentor{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Auth Layout */
+
+    .auth-layout .main-content {
+        margin-left: 0;
+        min-height: 100vh;
+    }
+
+    .auth-layout .page-content {
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    .register-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 18px;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(79,70,229,.20), transparent 35%),
+            radial-gradient(circle at 85% 85%, rgba(37,99,235,.18), transparent 35%),
+            #0b1220;
+    }
+
+    .register-wrapper {
+        width: 100%;
+        max-width: 1020px;
+        min-height: 600px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 25px 80px rgba(0,0,0,.35);
+    }
+
+    /* Left Branding Panel */
+
+    .register-visual {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 42px;
+        color: white;
+        background: linear-gradient(145deg, #172554, #3730a3 60%, #6d28d9);
+    }
+
+    .register-visual::before,
+    .register-visual::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,.07);
+    }
+
+    .register-visual::before {
+        width: 300px;
+        height: 300px;
+        right: -120px;
+        top: -100px;
+    }
+
+    .register-visual::after {
+        width: 240px;
+        height: 240px;
+        left: -100px;
+        bottom: -100px;
+    }
+
+    .register-brand,
+    .register-visual-content,
+    .register-visual-footer {
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .register-brand i {
+        width: 43px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        background: rgba(255,255,255,.18);
+    }
+
+    .register-visual-content {
+        margin: 65px 0;
+    }
+
+    .register-label {
+        color: #c4b5fd;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .register-visual-content h1 {
+        margin: 18px 0;
+        font-size: clamp(30px, 3.2vw, 43px);
+        line-height: 1.2;
+        font-weight: 800;
+    }
+
+    .register-visual-content p {
+        color: #ddd6fe;
+        line-height: 1.8;
+        font-size: 14px;
+    }
+
+    .register-feature {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 24px;
+        color: #f1f5f9;
+        font-size: 13px;
+    }
+
+    .register-feature i {
+        font-size: 20px;
+        color: #c4b5fd;
+    }
+
+    .register-visual-footer {
+        color: #c4b5fd;
+        font-size: 11px;
+    }
+
+    /* Right Form Panel */
+
+    .register-form-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 55px 48px;
+    }
+
+    .register-heading h2 {
+        color: #111827;
+        font-size: 29px;
+        font-weight: 800;
+        margin-bottom: 9px;
+    }
+
+    .register-heading p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    .register-form-panel .form-label {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .register-input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .register-input-group > i {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 17px;
+        pointer-events: none;
+    }
+
+    .register-input {
+        width: 100%;
+        height: 51px;
+        padding: 12px 15px 12px 45px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        outline: none;
+        background: #f8fafc;
+        font-size: 14px;
+        transition: .2s;
+    }
+
+    .register-input:focus {
+        border-color: #6366f1;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+    }
+
+    .register-submit {
+        width: 100%;
+        height: 51px;
+        margin-top: 7px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(100deg, #2563eb, #6d28d9);
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        transition: .2s;
+    }
+
+    .register-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 9px 20px rgba(79,70,229,.25);
+    }
+
+    .register-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px;
+        margin-top: 23px;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .register-note i {
+        color: #2563eb;
+        font-size: 17px;
+    }
+
+    .register-bottom {
+        margin-top: 25px;
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .register-bottom a {
+        color: #4f46e5;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .register-bottom a:hover {
+        text-decoration: underline;
+    }
+
+    .register-security {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        margin-top: 22px;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .field-error {
+        color: #dc2626;
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    /* Mobile Responsive */
+
+    @media (max-width: 767px) {
+
+        .register-page {
+            min-height: 100svh;
+            padding: 22px 14px;
+        }
+
+        .register-wrapper {
+            max-width: 460px;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            border-radius: 22px;
+        }
+
+        .register-visual {
+            min-height: auto;
+            padding: 22px 24px 25px;
+        }
+
+        .register-brand {
+            font-size: 19px;
+            gap: 10px;
+        }
+
+        .register-brand i {
+            width: 38px;
+            height: 38px;
+            font-size: 17px;
+        }
+
+        .register-visual-content {
+            margin: 25px 0 0;
+        }
+
+        .register-label {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .register-visual-content h1 {
+            max-width: 300px;
+            font-size: clamp(23px, 6vw, 27px);
+            margin: 10px 0;
+        }
+
+        .register-visual-content p {
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .register-feature,
+        .register-visual-footer {
+            display: none;
+        }
+
+        .register-form-panel {
+            padding: 30px 25px 27px;
+        }
+
+        .register-heading h2 {
+            font-size: 25px;
+        }
+
+        .register-heading p {
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .register-input {
+            height: 52px;
+            font-size: 14px;
+        }
+
+        .register-submit {
+            height: 53px;
+        }
+
+        .register-bottom {
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 380px) {
+
+        .register-page {
+            padding: 14px 10px;
+        }
+
+        .register-visual {
+            padding: 19px 20px 21px;
+        }
+
+        .register-form-panel {
+            padding: 25px 20px;
+        }
+
+        .register-visual-content h1 {
+            font-size: 22px;
+        }
+
+        .register-heading h2 {
+            font-size: 23px;
+        }
+    }
+
+    @media (max-height: 700px) and (max-width: 767px) {
+
+        .register-page {
+            align-items: flex-start;
+        }
+
+        .register-visual {
+            padding-top: 17px;
+            padding-bottom: 18px;
+        }
+
+        .register-visual-content {
+            margin-top: 16px;
+        }
+
+        .register-form-panel {
+            padding-top: 22px;
+            padding-bottom: 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="register-page">
+
+    <div class="register-wrapper">
+
+        <!-- LEFT BRANDING -->
+        <div class="register-visual">
+
+            <div class="register-brand">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>PDF Mentor</span>
+            </div>
+
+            <div class="register-visual-content">
+
+                <span class="register-label">
+                    START YOUR JOURNEY
+                </span>
+
+                <h1>Your next chapter starts here.</h1>
+
+                <p>
+                    Create your account and get access to
+                    your personal PDF learning library.
+                </p>
+
+                <div class="register-feature">
+                    <i class="bi bi-person-check-fill"></i>
+                    <span>Simple account registration</span>
+                </div>
+
+                <div class="register-feature">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>Admin-approved secure access</span>
+                </div>
+
+            </div>
+
+            <div class="register-visual-footer">
+                © 2026 PDF Mentor. All rights reserved.
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT REGISTRATION FORM -->
+        <div class="register-form-panel">
+
+            <div class="register-heading">
+                <h2>Create account</h2>
+                <p>Enter your details to get started.</p>
+            </div>
+
+
+            <!-- FORM ERRORS -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <!-- FULL NAME -->
+                <div class="mb-3">
+
+                    <label class="form-label" for="{{ form.full_name.id_for_label }}">
+                        Full Name
+                    </label>
+
+                    <div class="register-input-group">
+
+                        <i class="bi bi-person"></i>
+
+                        <input
+                            type="text"
+                            name="{{ form.full_name.html_name }}"
+                            id="{{ form.full_name.id_for_label }}"
+                            class="register-input"
+                            placeholder="Enter your full name"
+                            value="{{ form.full_name.value|default:'' }}"
+                            maxlength="150"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                    {% for error in form.full_name.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- MOBILE NUMBER -->
+                <div class="mb-3">
+
+                    <label class="form-label" for="{{ form.mobile_number.id_for_label }}">
+                        Mobile Number
+                    </label>
+
+                    <div class="register-input-group">
+
+                        <i class="bi bi-phone"></i>
+
+                        <input
+                            type="tel"
+                            name="{{ form.mobile_number.html_name }}"
+                            id="{{ form.mobile_number.id_for_label }}"
+                            class="register-input"
+                            placeholder="Enter 10-digit mobile number"
+                            value="{{ form.mobile_number.value|default:'' }}"
+                            maxlength="10"
+                            pattern="[0-9]{10}"
+                            inputmode="numeric"
+                            autocomplete="tel-national"
+                            required
+                        >
+
+                    </div>
+
+                    {% for error in form.mobile_number.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- SUBMIT -->
+                <button type="submit" class="register-submit">
+                    Create My Account
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+
+            </form>
+
+
+            <!-- APPROVAL NOTE -->
+            <div class="register-note">
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    Your account will be activated after admin approval.
+                    The admin will provide your login password.
+                </span>
+            </div>
+
+
+            <!-- LOGIN LINK -->
+            <div class="register-bottom">
+                Already have an account?
+                <a href="{% url 'login' %}">Sign in</a>
+            </div>
+
+
+            <div class="register-security">
+                <i class="bi bi-shield-lock-fill"></i>
+                Your information is handled securely
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

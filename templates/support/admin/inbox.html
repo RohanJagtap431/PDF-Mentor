@@ -1,0 +1,507 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Support Inbox | PDF Mentor{% endblock %}
+{% block page_heading %}Support Inbox{% endblock %}
+{% block breadcrumb %}Support Management{% endblock %}
+
+{% block content %}
+
+<style>
+.support-welcome {
+    background: linear-gradient(120deg, #172554, #4338ca, #5b43df);
+    color: white;
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.support-welcome h2 {
+    font-weight: 800;
+    margin: 12px 0 8px;
+}
+
+.support-welcome p {
+    margin: 0;
+    color: #dbeafe;
+}
+
+.support-welcome-icon {
+    font-size: 65px;
+    opacity: .9;
+}
+
+.support-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.support-stat {
+    background: white;
+    border: 1px solid #e9edf5;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.support-stat-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    margin-bottom: 13px;
+}
+
+.support-stat strong {
+    display: block;
+    font-size: 27px;
+    color: #172033;
+}
+
+.support-stat small {
+    color: #8490a5;
+    font-size: 12px;
+}
+
+.support-blue { background: #eff6ff; color: #2563eb; }
+.support-green { background: #dcfce7; color: #16a34a; }
+.support-orange { background: #fff7ed; color: #ea580c; }
+.support-purple { background: #f3e8ff; color: #9333ea; }
+
+.support-panel {
+    background: white;
+    border: 1px solid #e8eaf2;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.support-panel-header {
+    padding: 20px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.support-panel-header h5 {
+    font-weight: 750;
+    margin: 0 0 5px;
+    color: #172033;
+}
+
+.support-panel-header p {
+    color: #8792a5;
+    font-size: 13px;
+    margin: 0;
+}
+
+.support-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.support-search {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    max-width: 440px;
+}
+
+.support-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 13px;
+    border: 1px solid #e1e6ef;
+    border-radius: 9px;
+    outline: none;
+}
+
+.support-search button {
+    border: 0;
+    border-radius: 9px;
+    padding: 0 17px;
+    color: white;
+    background: #5145cd;
+}
+
+.support-filter {
+    padding: 10px 13px;
+    border: 1px solid #e1e6ef;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+}
+
+.support-table {
+    margin: 0;
+    min-width: 750px;
+}
+
+.support-table th {
+    background: #f8f9fc;
+    color: #8792a5;
+    font-size: 11px;
+    letter-spacing: .5px;
+    padding: 15px 18px;
+    white-space: nowrap;
+}
+
+.support-table td {
+    padding: 16px 18px;
+    vertical-align: middle;
+    color: #475569;
+    font-size: 13px;
+}
+
+.support-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.support-user-avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: #eef2ff;
+    color: #5145cd;
+    font-weight: 800;
+}
+
+.support-user strong {
+    display: block;
+    color: #172033;
+    font-size: 13px;
+}
+
+.support-user small {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.ticket-subject {
+    font-weight: 650;
+    color: #263247;
+}
+
+.ticket-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ticket-status-open {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.ticket-status-closed {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.ticket-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: white;
+    background: #5145cd;
+    padding: 8px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.ticket-action:hover {
+    background: #4338a8;
+    color: white;
+}
+
+.support-empty {
+    text-align: center;
+    padding: 55px 20px;
+}
+
+.support-empty i {
+    font-size: 42px;
+    color: #a5b4fc;
+}
+
+.support-empty h6 {
+    font-weight: 750;
+    margin-top: 12px;
+    color: #263247;
+}
+
+.support-empty p {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+@media(max-width: 900px) {
+    .support-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 576px) {
+    .support-welcome {
+        padding: 22px;
+    }
+
+    .support-welcome h2 {
+        font-size: 22px;
+    }
+
+    .support-welcome-icon {
+        font-size: 42px;
+    }
+
+    .support-toolbar {
+        align-items: stretch;
+    }
+
+    .support-search {
+        max-width: 100%;
+    }
+
+    .support-filter {
+        width: 100%;
+    }
+
+    .support-stats {
+        gap: 10px;
+    }
+
+    .support-stat {
+        padding: 14px;
+    }
+}
+</style>
+
+<div class="container-fluid px-0">
+
+    <!-- WELCOME -->
+    <section class="support-welcome">
+        <div>
+            <span class="small fw-bold">
+                <i class="bi bi-headset"></i>
+                CUSTOMER SUPPORT CENTER
+            </span>
+
+            <h2>Support Inbox</h2>
+
+            <p>Manage user conversations and respond to support requests.</p>
+        </div>
+
+        <div class="support-welcome-icon">
+            <i class="bi bi-chat-square-dots-fill"></i>
+        </div>
+    </section>
+
+    <!-- STATISTICS -->
+    <section class="support-stats">
+
+        <div class="support-stat">
+            <div class="support-stat-icon support-blue">
+                <i class="bi bi-ticket-perforated-fill"></i>
+            </div>
+            <strong>{{ total_tickets }}</strong>
+            <small>Total Tickets</small>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon support-green">
+                <i class="bi bi-chat-dots-fill"></i>
+            </div>
+            <strong>{{ open_tickets }}</strong>
+            <small>Open Tickets</small>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon support-orange">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <strong>{{ closed_tickets }}</strong>
+            <small>Closed Tickets</small>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon support-purple">
+                <i class="bi bi-envelope-fill"></i>
+            </div>
+            <strong>{{ unread_messages }}</strong>
+            <small>Unread User Messages</small>
+        </div>
+
+    </section>
+
+    <!-- TICKETS TABLE -->
+    <section class="support-panel">
+
+        <div class="support-panel-header">
+
+            <h5>
+                <i class="bi bi-inbox-fill me-2"></i>
+                All Support Conversations
+            </h5>
+
+            <p>View user requests and manage conversations.</p>
+
+            <div class="support-toolbar">
+
+                <form method="GET" class="support-search">
+
+                    <input
+                        type="search"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search name, mobile or subject..."
+                    >
+
+                    <button type="submit">
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+
+                </form>
+
+                <form method="GET">
+                    <input type="hidden" name="search" value="{{ search }}">
+
+                    <select
+                        name="status"
+                        class="support-filter"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="">All Tickets</option>
+                        <option value="open"
+                            {% if selected_status == "open" %}selected{% endif %}>
+                            Open
+                        </option>
+                        <option value="closed"
+                            {% if selected_status == "closed" %}selected{% endif %}>
+                            Closed
+                        </option>
+                    </select>
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table support-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>USER</th>
+                        <th>SUBJECT</th>
+                        <th>CREATED</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for ticket in tickets %}
+
+                    <tr>
+
+                        <td>
+                            <div class="support-user">
+
+                                <div class="support-user-avatar">
+                                    {{ ticket.user.full_name|first|upper }}
+                                </div>
+
+                                <div>
+                                    <strong>{{ ticket.user.full_name }}</strong>
+                                    <small>{{ ticket.user.mobile_number }}</small>
+                                </div>
+
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="ticket-subject">
+                                {{ ticket.subject }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ ticket.created_at|date:"d M Y" }}
+                        </td>
+
+                        <td>
+                            {% if ticket.status == "open" %}
+                                <span class="ticket-status ticket-status-open">
+                                    <i class="bi bi-circle-fill"></i>
+                                    Open
+                                </span>
+                            {% else %}
+                                <span class="ticket-status ticket-status-closed">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Closed
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a
+                                href="{% url 'admin_support_conversation' ticket.id %}"
+                                class="ticket-action"
+                            >
+                                <i class="bi bi-chat-left-text-fill"></i>
+                                Open Chat
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5">
+
+                            <div class="support-empty">
+                                <i class="bi bi-inbox"></i>
+                                <h6>No support tickets found</h6>
+                                <p>User support conversations will appear here.</p>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

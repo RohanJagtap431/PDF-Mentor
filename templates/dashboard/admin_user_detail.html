@@ -1,0 +1,161 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}User Details | PDF Mentor{% endblock %}
+{% block page_heading %}User Details{% endblock %}
+{% block breadcrumb %}User Details{% endblock %}
+
+{% block content %}
+
+<div class="user-detail-page">
+
+    <div class="user-detail-heading">
+        <div>
+            <span class="users-eyebrow">ACCOUNT INFORMATION</span>
+            <h1>User Details</h1>
+            <p>View complete information about this user account.</p>
+        </div>
+
+        <a href="{% url 'admin_users' %}" class="detail-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back to Users
+        </a>
+    </div>
+
+
+    <section class="user-detail-card">
+
+        <div class="user-detail-profile">
+
+            <div class="detail-avatar">
+                {{ managed_user.full_name|first|upper }}
+            </div>
+
+            <div>
+                <h3>{{ managed_user.full_name }}</h3>
+                <p>User ID: {{ managed_user.id }}</p>
+
+                {% if not managed_user.is_active %}
+                    <span class="management-status inactive-status">
+                        <span></span> Inactive
+                    </span>
+                {% elif managed_user.is_approved %}
+                    <span class="management-status approved-status">
+                        <span></span> Approved
+                    </span>
+                {% else %}
+                    <span class="management-status pending-status">
+                        <span></span> Pending Approval
+                    </span>
+                {% endif %}
+            </div>
+
+        </div>
+
+
+        <div class="detail-information-grid">
+
+            <div class="detail-information-item">
+                <span>FULL NAME</span>
+                <strong>{{ managed_user.full_name }}</strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>MOBILE NUMBER</span>
+                <strong>{{ managed_user.mobile_number }}</strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>ACCOUNT ROLE</span>
+                <strong>{{ managed_user.get_role_display }}</strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>REGISTERED ON</span>
+                <strong>{{ managed_user.date_joined|date:"d F Y, h:i A" }}</strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>ACCOUNT APPROVAL</span>
+                <strong>
+                    {% if managed_user.is_approved %}Approved{% else %}Pending{% endif %}
+                </strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>ACCOUNT STATUS</span>
+                <strong>
+                    {% if managed_user.is_active %}Active{% else %}Inactive{% endif %}
+                </strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>LAST LOGIN</span>
+                <strong>
+                    {% if managed_user.last_login %}
+                        {{ managed_user.last_login|date:"d M Y, h:i A" }}
+                    {% else %}
+                        Never logged in
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="detail-information-item">
+                <span>CREATED BY</span>
+                <strong>
+                    {% if managed_user.created_by %}
+                        {{ managed_user.created_by.full_name }}
+                    {% else %}
+                        Self Registration
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="detail-actions">
+
+            {% if not managed_user.is_approved and managed_user.is_active %}
+            <form method="POST" action="{% url 'approve_user' managed_user.id %}">
+                {% csrf_token %}
+                <button type="submit" class="detail-primary-btn">
+                    <i class="bi bi-check-circle"></i>
+                    Approve Account
+                </button>
+            </form>
+            {% endif %}
+
+            <a href="{% url 'set_user_password' managed_user.id %}"
+               class="detail-secondary-btn">
+                <i class="bi bi-key"></i>
+                Set / Reset Password
+            </a>
+
+            <form method="POST"
+                  action="{% url 'toggle_user_status' managed_user.id %}"
+                  onsubmit="return confirm('Change this account status?');">
+                {% csrf_token %}
+                <button type="submit" class="detail-secondary-btn">
+                    <i class="bi bi-person-gear"></i>
+                    {% if managed_user.is_active %}Deactivate{% else %}Reactivate{% endif %}
+                </button>
+            </form>
+
+            <form method="POST"
+                  action="{% url 'delete_user' managed_user.id %}"
+                  onsubmit="return confirm('Permanently delete this account?');">
+                {% csrf_token %}
+                <button type="submit" class="detail-danger-btn">
+                    <i class="bi bi-trash3"></i>
+                    Delete User
+                </button>
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

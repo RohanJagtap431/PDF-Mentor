@@ -1,0 +1,751 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My PDF Library | PDF Mentor{% endblock %}
+{% block page_heading %}My PDF Library{% endblock %}
+
+{% block extra_css %}
+<style>
+
+/* =========================================
+   PDF MENTOR - MY PDF LIBRARY
+   PREMIUM RESPONSIVE DESIGN
+========================================= */
+
+.library-page {
+    width: 100%;
+    max-width: 1550px;
+    margin: 0 auto;
+    min-width: 0;
+}
+
+/* HERO SECTION */
+
+.library-header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 38px 36px;
+    min-height: 150px;
+    margin-bottom: 28px;
+    border-radius: 19px;
+    color: #ffffff;
+    background: linear-gradient(
+        115deg,
+        #25266f,
+        #4338ca 55%,
+        #6366f1
+    );
+    box-shadow: 0 12px 30px rgba(67, 56, 202, 0.15);
+}
+
+.library-header::before,
+.library-header::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+}
+
+.library-header::before {
+    width: 240px;
+    height: 240px;
+    right: 100px;
+    top: -150px;
+}
+
+.library-header::after {
+    width: 190px;
+    height: 190px;
+    right: -50px;
+    bottom: -130px;
+}
+
+.library-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.library-header h2 {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.library-header p {
+    margin: 0;
+    color: #e0e7ff;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* TOOLBAR */
+
+.library-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.library-search {
+    display: flex;
+    align-items: stretch;
+    gap: 9px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.library-search input {
+    min-width: 0;
+    flex: 1;
+    height: 49px;
+    padding: 0 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #ffffff;
+    color: #172033;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.library-search input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.library-search input::placeholder {
+    color: #94a3b8;
+}
+
+.library-search button {
+    flex-shrink: 0;
+    min-width: 110px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 11px;
+    background: linear-gradient(120deg, #5148c7, #6d5ce8);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.library-search button:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(79,70,229,0.2);
+}
+
+.library-count {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* PDF GRID */
+
+.pdf-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(min(100%, 255px), 1fr)
+    );
+    gap: 22px;
+    align-items: stretch;
+}
+
+/* PDF CARD */
+
+.pdf-card {
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #e8eaf2;
+    border-radius: 17px;
+    box-shadow: 0 4px 16px rgba(15,23,42,0.035);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.pdf-card:hover {
+    transform: translateY(-5px);
+    border-color: #c7d2fe;
+    box-shadow: 0 14px 32px rgba(15,23,42,0.09);
+}
+
+/* PDF ICON */
+
+.pdf-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    margin-bottom: 17px;
+    border-radius: 14px;
+    background: #fff0f0;
+    color: #dc3545;
+    font-size: 26px;
+}
+
+/* PDF TITLE */
+
+.pdf-card h5 {
+    color: #172033;
+    font-size: 17px;
+    font-weight: 750;
+    line-height: 1.45;
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+
+/* DESCRIPTION */
+
+.pdf-description {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* PDF META */
+
+.pdf-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: auto;
+    margin-bottom: 17px;
+    padding-top: 13px;
+    border-top: 1px solid #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.pdf-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pdf-meta i {
+    font-size: 13px;
+    color: #818cf8;
+}
+
+/* VIEW BUTTON */
+
+.view-pdf-btn {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 15px;
+    border-radius: 10px;
+    background: linear-gradient(120deg, #5148c7, #6d5ce8);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+
+.view-pdf-btn:hover {
+    background: #4338ca;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 17px rgba(79,70,229,0.2);
+}
+
+/* EMPTY LIBRARY */
+
+.empty-library {
+    width: 100%;
+    padding: 65px 22px;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 17px;
+    text-align: center;
+}
+
+.empty-library i {
+    width: 75px;
+    height: 75px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #6366f1;
+    font-size: 34px;
+}
+
+.empty-library h4 {
+    color: #172033;
+    font-size: 19px;
+    font-weight: 750;
+    margin-bottom: 10px;
+}
+
+.empty-library p {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* PAGINATION */
+
+.library-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.library-pagination a,
+.library-pagination span {
+    min-height: 39px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.library-pagination a:hover {
+    background: #eef2ff;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+}
+
+.library-pagination .current {
+    background: #5b50d6;
+    border-color: #5b50d6;
+    color: white;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 991.98px) {
+
+    .library-header {
+        padding: 30px;
+    }
+
+    .pdf-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .library-search {
+        max-width: 480px;
+    }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 767.98px) {
+
+    .library-header {
+        min-height: auto;
+        padding: 27px 23px;
+        margin-bottom: 22px;
+        border-radius: 16px;
+    }
+
+    .library-header h2 {
+        font-size: 25px;
+    }
+
+    .library-header p {
+        font-size: 13px;
+    }
+
+    .library-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .library-search {
+        max-width: 100%;
+    }
+
+    .library-count {
+        align-self: flex-end;
+        font-size: 12px;
+    }
+
+    .pdf-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .pdf-card {
+        padding: 19px;
+        border-radius: 15px;
+    }
+
+    .pdf-card h5 {
+        font-size: 16px;
+    }
+
+    .pdf-description {
+        font-size: 12px;
+    }
+
+    .empty-library {
+        padding: 45px 17px;
+    }
+
+    .empty-library h4 {
+        font-size: 17px;
+    }
+
+    .library-pagination {
+        gap: 7px;
+    }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+    .library-header {
+        padding: 23px 18px;
+        border-radius: 14px;
+    }
+
+    .library-header h2 {
+        font-size: 23px;
+    }
+
+    .library-header p {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .library-search {
+        gap: 7px;
+    }
+
+    .library-search input {
+        height: 45px;
+        padding: 0 11px;
+        font-size: 12px;
+    }
+
+    .library-search button {
+        min-width: 91px;
+        padding: 0 11px;
+        font-size: 12px;
+    }
+
+    .pdf-card {
+        padding: 17px;
+    }
+
+    .pdf-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 23px;
+    }
+
+    .pdf-card h5 {
+        font-size: 15px;
+    }
+
+    .pdf-meta {
+        font-size: 10px;
+    }
+
+    .view-pdf-btn {
+        min-height: 44px;
+        font-size: 13px;
+    }
+
+    .library-pagination a,
+    .library-pagination span {
+        padding: 8px 11px;
+        font-size: 11px;
+    }
+}
+
+/* =========================================
+   EXTRA SMALL MOBILE
+========================================= */
+
+@media (max-width: 360px) {
+
+    .library-header {
+        padding: 20px 15px;
+    }
+
+    .library-header h2 {
+        font-size: 21px;
+    }
+
+    .library-search button {
+        min-width: 82px;
+        padding: 0 8px;
+    }
+
+    .pdf-card {
+        padding: 15px;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+    .pdf-card,
+    .view-pdf-btn,
+    .library-search button,
+    .library-pagination a {
+        transition: none;
+    }
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid px-0 library-page">
+
+    <!-- HERO SECTION -->
+
+    <section class="library-header">
+
+        <div class="library-header-content">
+
+            <h2>
+                My PDF Library 📚
+            </h2>
+
+            <p>
+                All your assigned learning materials in one place.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="library-toolbar">
+
+        <form method="GET" class="library-search">
+
+            <input
+                type="search"
+                name="search"
+                placeholder="Search PDF by title..."
+                value="{{ search_query }}"
+                aria-label="Search PDF by title"
+            >
+
+            <button type="submit">
+                <i class="bi bi-search"></i>
+                Search
+            </button>
+
+        </form>
+
+        <span class="library-count">
+            {{ total_pdfs }} PDF{{ total_pdfs|pluralize }}
+        </span>
+
+    </div>
+
+
+    <!-- PDF LIBRARY -->
+
+    {% if my_assignments %}
+
+        <div class="pdf-grid">
+
+            {% for assignment in my_assignments %}
+
+                <article class="pdf-card">
+
+                    <div class="pdf-icon">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                    </div>
+
+                    <h5>
+                        {{ assignment.document.title }}
+                    </h5>
+
+                    <p class="pdf-description">
+
+                        {% if assignment.document.description %}
+
+                            {{ assignment.document.description|truncatechars:100 }}
+
+                        {% else %}
+
+                            No description available.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <!-- PDF INFORMATION -->
+
+                    <div class="pdf-meta">
+
+                        <span>
+                            <i class="bi bi-hdd"></i>
+                            {{ assignment.document.file_size|filesizeformat }}
+                        </span>
+
+                        <span>
+                            <i class="bi bi-calendar3"></i>
+                            {{ assignment.assigned_at|date:"d M Y" }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- VIEW PDF -->
+
+                    <a
+                        href="{% url 'document_view' assignment.document.id %}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="view-pdf-btn"
+                    >
+
+                        <i class="bi bi-eye-fill"></i>
+                        View PDF
+
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- PAGINATION -->
+
+        {% if my_assignments.has_other_pages %}
+
+            <div class="library-pagination">
+
+                {% if my_assignments.has_previous %}
+
+                    <a href="?page={{ my_assignments.previous_page_number }}&search={{ search_query|urlencode }}">
+                        <i class="bi bi-chevron-left"></i>
+                        Previous
+                    </a>
+
+                {% endif %}
+
+
+                <span class="current">
+                    Page {{ my_assignments.number }}
+                    of {{ my_assignments.paginator.num_pages }}
+                </span>
+
+
+                {% if my_assignments.has_next %}
+
+                    <a href="?page={{ my_assignments.next_page_number }}&search={{ search_query|urlencode }}">
+                        Next
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+
+    {% else %}
+
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty-library">
+
+            <i class="bi bi-folder2-open"></i>
+
+            <h4>
+
+                {% if search_query %}
+
+                    No matching PDFs found
+
+                {% else %}
+
+                    Your library is empty
+
+                {% endif %}
+
+            </h4>
+
+            <p>
+
+                {% if search_query %}
+
+                    Try searching with another PDF title.
+
+                {% else %}
+
+                    Your assigned PDFs will appear here.
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

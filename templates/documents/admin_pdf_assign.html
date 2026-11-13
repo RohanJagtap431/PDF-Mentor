@@ -1,0 +1,226 @@
+
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block title %}PDF Assignments | PDF Mentor{% endblock %}
+
+{% block content %}
+<div class="container-fluid pdf-assign-page py-4">
+
+    <div class="assign-page-header">
+        <div>
+            <span class="assign-eyebrow">DOCUMENT MANAGEMENT</span>
+            <h2>PDF Assignments</h2>
+            <p>Assign learning materials to approved users.</p>
+        </div>
+
+        <a href="{% url 'admin_pdf_list' %}" class="assign-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to PDFs</span>
+        </a>
+    </div>
+
+    <div class="assign-card">
+        <div class="assign-card-heading">
+            <div class="assign-heading-icon">
+                <i class="bi bi-folder-plus"></i>
+            </div>
+            <div>
+                <h5>Assign Documents</h5>
+                <p>Select a user and choose the PDFs they should access.</p>
+            </div>
+        </div>
+
+        <form method="POST" class="assign-form">
+            {% csrf_token %}
+
+            <div class="assign-field">
+                <label for="user_id">Select User</label>
+
+                <select name="user_id" id="user_id" class="assign-select" required>
+                    <option value="">Choose an approved user</option>
+
+                    {% for user in users %}
+                        <option value="{{ user.id }}">
+                            {{ user.full_name }} — {{ user.mobile_number }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                {% if not users %}
+                    <small class="assign-help">
+                        No active and approved users are currently available.
+                    </small>
+                {% endif %}
+            </div>
+
+            <div class="assign-pdf-section">
+                <div class="assign-pdf-heading">
+                    <div>
+                        <label>Select PDFs</label>
+                        <p>Choose one or more documents to assign.</p>
+                    </div>
+                    <span class="assign-count">
+                        {{ documents|length }} available
+                    </span>
+                </div>
+
+                <div class="assign-pdf-list">
+                    {% for document in documents %}
+                        <label class="assign-pdf-item" for="pdf_{{ document.id }}">
+                            <input
+                                type="checkbox"
+                                name="document_ids"
+                                value="{{ document.id }}"
+                                id="pdf_{{ document.id }}"
+                            >
+
+                            <span class="assign-pdf-icon">
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                            </span>
+
+                            <span class="assign-pdf-info">
+                                <strong>{{ document.title }}</strong>
+                                <small>{{ document.original_filename }}</small>
+                            </span>
+
+                            <span class="assign-check-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </span>
+                        </label>
+                    {% empty %}
+                        <div class="assign-empty">
+                            <i class="bi bi-file-earmark-x"></i>
+                            <strong>No active PDFs found</strong>
+                            <span>Upload a PDF before assigning documents.</span>
+                            <a href="{% url 'admin_pdf_upload' %}">
+                                Upload PDF
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="assign-form-footer">
+                <span>
+                    <i class="bi bi-shield-check"></i>
+                    Only selected approved users get access.
+                </span>
+
+                <button
+                    type="submit"
+                    class="assign-submit-btn"
+                    {% if not users or not documents %}disabled{% endif %}
+                >
+                    <i class="bi bi-folder-check"></i>
+                    Assign Selected PDFs
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="assign-card history-card">
+        <div class="assign-card-heading">
+            <div class="assign-heading-icon history-icon">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div>
+                <h5>Assignment History</h5>
+                <p>Review the PDFs assigned to your users.</p>
+            </div>
+        </div>
+
+        
+        <div class="assign-table-wrap">
+            <table class="assign-table">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>User</th>
+                        <th>Mobile Number</th>
+                        <th>Assigned By</th>
+                        <th>Assigned On</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td data-label="Document">
+                                <div class="history-document">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                                    <strong>{{ assignment.document.title }}</strong>
+                                </div>
+                            </td>
+
+                            <td data-label="User">
+                                {{ assignment.user.full_name }}
+                            </td>
+
+                            <td data-label="Mobile Number">
+                                {{ assignment.user.mobile_number }}
+                            </td>
+
+                            <td data-label="Assigned By">
+                                {% if assignment.assigned_by %}
+                                    {{ assignment.assigned_by.full_name }}
+                                {% else %}
+                                    Admin
+                                {% endif %}
+                            </td>
+
+                            <td data-label="Assigned On">
+                                {{ assignment.assigned_at|date:"d M Y, h:i A" }}
+                            </td>
+
+                            <td data-label="Status">
+                                {% if assignment.is_active %}
+                                    <span class="assign-status active">
+                                        <span></span> Active
+                                    </span>
+                                {% else %}
+                                    <span class="assign-status inactive">
+                                        <span></span> Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td data-label="Action">
+                                {% if assignment.is_active %}
+                                    <form method="POST"
+                                        action="{% url 'remove_pdf_assignment' assignment.id %}"
+                                        onsubmit="return confirm('Remove this PDF access from the user?');">
+                                        {% csrf_token %}
+
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-x-circle"></i>
+                                            Remove
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted">Access Removed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="assign-history-empty">
+                                    <i class="bi bi-inbox"></i>
+                                    <strong>No assignments yet</strong>
+                                    <span>Assigned documents will appear here.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

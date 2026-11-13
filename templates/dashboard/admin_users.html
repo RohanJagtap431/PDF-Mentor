@@ -1,0 +1,469 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}User Management | PDF Mentor{% endblock %}
+{% block page_heading %}User Management{% endblock %}
+{% block breadcrumb %}User Management{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="users-page-header">
+
+    <div>
+        <span class="users-eyebrow">
+            <i class="bi bi-people-fill"></i>
+            ACCOUNT MANAGEMENT
+        </span>
+
+        <h1>User Management</h1>
+
+        <p>View, search and manage all registered PDF Mentor users.</p>
+    </div>
+
+    <div class="users-total-card">
+        <div class="users-total-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+
+        <div>
+            <small>Total Registered Users</small>
+            <strong>{{ total_users }}</strong>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- STATISTICS -->
+<div class="users-summary-grid">
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-blue">
+            <i class="bi bi-people"></i>
+        </span>
+
+        <div>
+            <small>Total Users</small>
+            <strong>{{ total_users }}</strong>
+        </div>
+    </div>
+
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-green">
+            <i class="bi bi-person-check"></i>
+        </span>
+
+        <div>
+            <small>Approved</small>
+            <strong>{{ approved_count }}</strong>
+        </div>
+    </div>
+
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-orange">
+            <i class="bi bi-hourglass-split"></i>
+        </span>
+
+        <div>
+            <small>Pending</small>
+            <strong>{{ pending_count }}</strong>
+        </div>
+    </div>
+
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-red">
+            <i class="bi bi-person-x"></i>
+        </span>
+
+        <div>
+            <small>Inactive</small>
+            <strong>{{ inactive_count }}</strong>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- USERS TABLE PANEL -->
+<section class="users-management-panel">
+
+    <!-- PANEL HEADER -->
+    <div class="users-panel-header">
+
+        <div>
+            <h5>All Users</h5>
+            <p>Manage registered accounts and their access status.</p>
+        </div>
+
+        <span class="users-record-count">
+            {{ users.paginator.count }} Records
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH AND FILTER -->
+    <form method="GET" class="users-filter-form">
+
+        <div class="users-search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="search"
+                name="search"
+                value="{{ search_query }}"
+                placeholder="Search name or mobile number..."
+                aria-label="Search users"
+            >
+
+        </div>
+
+
+        <select name="status" class="users-status-select">
+
+            <option value="">All Statuses</option>
+
+            <option value="approved"
+                {% if selected_status == "approved" %}selected{% endif %}>
+                Approved
+            </option>
+
+            <option value="pending"
+                {% if selected_status == "pending" %}selected{% endif %}>
+                Pending
+            </option>
+
+            <option value="inactive"
+                {% if selected_status == "inactive" %}selected{% endif %}>
+                Inactive
+            </option>
+
+        </select>
+
+
+        <button type="submit" class="users-filter-btn">
+            <i class="bi bi-funnel"></i>
+            Apply Filters
+        </button>
+
+
+        {% if search_query or selected_status %}
+            <a href="{% url 'admin_users' %}" class="users-reset-btn">
+                Reset
+            </a>
+        {% endif %}
+
+    </form>
+
+
+    <!-- USERS TABLE -->
+    <div class="table-responsive">
+
+        <table class="table users-management-table align-middle">
+
+            <thead>
+                <tr>
+                    <th>USER DETAILS</th>
+                    <th>MOBILE NUMBER</th>
+                    <th>REGISTERED ON</th>
+                    <th>ACCOUNT STATUS</th>
+                    <th>ACCOUNT TYPE</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                {% for user in users %}
+
+                <tr>
+
+                    <!-- USER DETAILS -->
+                    <td>
+
+                        <div class="management-user">
+
+                            <div class="management-user-avatar">
+                                {{ user.full_name|first|upper }}
+                            </div>
+
+                            <div>
+                                <strong>{{ user.full_name }}</strong>
+
+                                <small>
+                                    User ID: {{ user.id }}
+                                </small>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- MOBILE NUMBER -->
+                    <td>
+
+                        <span class="management-mobile">
+                            <i class="bi bi-telephone"></i>
+                            {{ user.mobile_number }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- REGISTERED DATE -->
+                    <td>
+
+                        <span class="management-date">
+                            {{ user.date_joined|date:"d M Y" }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACCOUNT STATUS -->
+                    <td>
+
+                        {% if not user.is_active %}
+
+                            <span class="management-status inactive-status">
+                                <span></span>
+                                Inactive
+                            </span>
+
+                        {% elif user.is_approved %}
+
+                            <span class="management-status approved-status">
+                                <span></span>
+                                Approved
+                            </span>
+
+                        {% else %}
+
+                            <span class="management-status pending-status">
+                                <span></span>
+                                Pending
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACCOUNT TYPE -->
+                    <td>
+
+                        <span class="account-type-badge">
+                            <i class="bi bi-person-fill"></i>
+                            Standard User
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+                    <td>
+
+                        <div class="user-actions">
+
+                            <!-- VIEW DETAILS -->
+                            <a
+                                href="{% url 'admin_user_detail' user.id %}"
+                                class="user-action-btn view-action"
+                                title="View Details"
+                                aria-label="View user details"
+                            >
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+
+
+                            <!-- APPROVE ACCOUNT -->
+                            {% if not user.is_approved and user.is_active %}
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'approve_user' user.id %}"
+                                    onsubmit="return confirm('Approve this user account?');"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="user-action-btn approve-action"
+                                        title="Approve Account"
+                                        aria-label="Approve account"
+                                    >
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+
+                            <!-- DEACTIVATE / REACTIVATE -->
+                            <form
+                                method="POST"
+                                action="{% url 'toggle_user_status' user.id %}"
+                                onsubmit="return confirm('{% if user.is_active %}Deactivate{% else %}Reactivate{% endif %} this account?');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="user-action-btn {% if user.is_active %}deactivate-action{% else %}activate-action{% endif %}"
+                                    title="{% if user.is_active %}Deactivate{% else %}Reactivate{% endif %}"
+                                    aria-label="{% if user.is_active %}Deactivate account{% else %}Reactivate account{% endif %}"
+                                >
+
+                                    <i class="bi {% if user.is_active %}bi-person-x-fill{% else %}bi-person-check-fill{% endif %}"></i>
+
+                                </button>
+
+                            </form>
+
+
+                            <!-- SET / RESET PASSWORD -->
+                            <a
+                                href="{% url 'set_user_password' user.id %}"
+                                class="user-action-btn password-action"
+                                title="Set / Reset Password"
+                                aria-label="Set or reset password"
+                            >
+                                <i class="bi bi-key-fill"></i>
+                            </a>
+
+
+                            <!-- DELETE USER -->
+                            <form
+                                method="POST"
+                                action="{% url 'delete_user' user.id %}"
+                                onsubmit="return confirm('Permanently delete this user account? This action cannot be undone.');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="user-action-btn delete-action"
+                                    title="Delete User"
+                                    aria-label="Delete user"
+                                >
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <!-- EMPTY STATE -->
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="users-empty-state">
+
+                            <div>
+                                <i class="bi bi-search"></i>
+                            </div>
+
+                            <h6>No users found</h6>
+
+                            <p>
+                                Try changing your search or filter criteria.
+                            </p>
+
+                            <a href="{% url 'admin_users' %}">
+                                Clear Filters
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- PAGINATION -->
+    {% if users.has_other_pages %}
+
+    <div class="users-pagination">
+
+        <span class="pagination-info">
+            Page {{ users.number }} of {{ users.paginator.num_pages }}
+        </span>
+
+
+        <div class="pagination-controls">
+
+            {% if users.has_previous %}
+
+                <a
+                    href="?search={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ users.previous_page_number }}"
+                    class="pagination-btn"
+                >
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </a>
+
+            {% else %}
+
+                <span class="pagination-btn disabled">
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </span>
+
+            {% endif %}
+
+
+            {% if users.has_next %}
+
+                <a
+                    href="?search={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ users.next_page_number }}"
+                    class="pagination-btn"
+                >
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+            {% else %}
+
+                <span class="pagination-btn disabled">
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

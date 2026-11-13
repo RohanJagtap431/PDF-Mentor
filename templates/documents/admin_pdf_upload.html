@@ -1,0 +1,88 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Upload PDF | PDF Mentor{% endblock %}
+{% block page_heading %}Upload PDF{% endblock %}
+{% block breadcrumb %}PDF Management / Upload{% endblock %}
+
+{% block content %}
+
+<div class="pdf-upload-page">
+
+    <div class="pdf-page-heading">
+        <div>
+            <span class="users-eyebrow">DOCUMENT MANAGEMENT</span>
+            <h1>Upload New PDF</h1>
+            <p>Add a new learning document to your PDF Mentor library.</p>
+        </div>
+
+        <a href="{% url 'admin_pdf_list' %}" class="detail-back-btn">
+            <i class="bi bi-arrow-left"></i> Back to PDFs
+        </a>
+    </div>
+
+    <div class="pdf-upload-card">
+
+        <div class="pdf-upload-intro">
+            <div class="pdf-upload-icon">
+                <i class="bi bi-file-earmark-pdf-fill"></i>
+            </div>
+            <div>
+                <h5>PDF Document Information</h5>
+                <p>Complete the details and select your PDF file.</p>
+            </div>
+        </div>
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="pdf-upload-form">
+
+            {% csrf_token %}
+
+            <div class="pdf-form-group">
+                <label for="{{ form.title.id_for_label }}">PDF Title</label>
+                {{ form.title }}
+                {% for error in form.title.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="pdf-form-group">
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+                {% for error in form.description.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="pdf-form-group">
+                <label for="{{ form.pdf_file.id_for_label }}">Select PDF File</label>
+                {{ form.pdf_file }}
+
+                <small class="pdf-field-help">
+                    Only PDF files are allowed. Large files may take longer to upload.
+                </small>
+
+                {% for error in form.pdf_file.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="pdf-upload-actions">
+                <a href="{% url 'admin_pdf_list' %}" class="password-cancel-btn">
+                    Cancel
+                </a>
+
+                <button type="submit" class="password-save-btn">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    Upload PDF
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

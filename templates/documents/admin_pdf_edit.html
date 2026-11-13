@@ -1,0 +1,75 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Edit PDF | PDF Mentor{% endblock %}
+{% block page_heading %}Edit PDF{% endblock %}
+{% block breadcrumb %}Edit PDF{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="pdf-page-heading">
+        <div>
+            <span class="users-eyebrow">DOCUMENT LIBRARY</span>
+            <h1>Edit PDF</h1>
+            <p>Update document information.</p>
+        </div>
+
+        <a href="{% url 'admin_pdf_list' %}" class="pdf-add-btn">
+            <i class="bi bi-arrow-left"></i> Back to PDFs
+        </a>
+    </div>
+
+    <div class="users-management-panel p-4">
+
+        <div class="mb-4">
+            <h5>{{ document.title }}</h5>
+            <p class="text-muted mb-0">
+                Original file: {{ document.original_filename }}
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.title.id_for_label }}">
+                    PDF Title
+                </label>
+                {{ form.title }}
+
+                {% for error in form.title.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.description.id_for_label }}">
+                    Description
+                </label>
+                {{ form.description }}
+
+                {% for error in form.description.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="pdf-add-btn">
+                    <i class="bi bi-check-lg"></i> Save Changes
+                </button>
+
+                <a href="{% url 'admin_pdf_list' %}"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

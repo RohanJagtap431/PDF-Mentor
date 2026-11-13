@@ -1,0 +1,286 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}PDF Management | PDF Mentor{% endblock %}
+{% block page_heading %}PDF Management{% endblock %}
+{% block breadcrumb %}PDF Management{% endblock %}
+
+{% block content %}
+
+<div class="pdf-page-heading">
+    <div>
+        <span class="users-eyebrow">DOCUMENT LIBRARY</span>
+        <h1>PDF Management</h1>
+        <p>Upload and manage learning documents.</p>
+    </div>
+
+    <a href="{% url 'admin_pdf_upload' %}" class="pdf-add-btn">
+        <i class="bi bi-plus-lg"></i> Upload New PDF
+    </a>
+</div>
+
+
+<div class="users-summary-grid">
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-blue">
+            <i class="bi bi-file-earmark-pdf"></i>
+        </span>
+        <div>
+            <small>Total PDFs</small>
+            <strong>{{ total_documents }}</strong>
+        </div>
+    </div>
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-green">
+            <i class="bi bi-check-circle"></i>
+        </span>
+        <div>
+            <small>Active PDFs</small>
+            <strong>{{ active_documents }}</strong>
+        </div>
+    </div>
+
+    <div class="users-summary-card">
+        <span class="summary-icon summary-red">
+            <i class="bi bi-pause-circle"></i>
+        </span>
+        <div>
+            <small>Inactive PDFs</small>
+            <strong>{{ inactive_documents }}</strong>
+        </div>
+    </div>
+
+</div>
+
+
+<section class="users-management-panel">
+
+    <div class="users-panel-header">
+        <div>
+            <h5>All Documents</h5>
+            <p>Manage your uploaded PDF collection.</p>
+        </div>
+
+        <span class="users-record-count">
+            {{ documents.paginator.count }} Records
+        </span>
+    </div>
+
+
+    <form method="GET" class="users-filter-form">
+
+        <div class="users-search-box">
+            <i class="bi bi-search"></i>
+            <input
+                type="search"
+                name="search"
+                value="{{ search_query }}"
+                placeholder="Search PDF title..."
+            >
+        </div>
+
+        <select name="status" class="users-status-select">
+            <option value="">All Statuses</option>
+
+            <option value="active"
+                {% if selected_status == "active" %}selected{% endif %}>
+                Active
+            </option>
+
+            <option value="inactive"
+                {% if selected_status == "inactive" %}selected{% endif %}>
+                Inactive
+            </option>
+        </select>
+
+        <button type="submit" class="users-filter-btn">
+            <i class="bi bi-funnel"></i> Filter
+        </button>
+
+        {% if search_query or selected_status %}
+            <a href="{% url 'admin_pdf_list' %}" class="users-reset-btn">
+                Reset
+            </a>
+        {% endif %}
+
+    </form>
+
+
+    <div class="table-responsive">
+
+        <table class="table users-management-table align-middle">
+
+            <thead>
+                <tr>
+                    <th>DOCUMENT</th>
+                    <th>FILE NAME</th>
+                    <th>FILE SIZE</th>
+                    <th>UPLOADED BY</th>
+                    <th>UPLOAD DATE</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for document in documents %}
+
+                <tr>
+
+                    <td>
+                        <div class="management-user">
+                            <div class="management-user-avatar pdf-table-icon">
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>{{ document.title }}</strong>
+                                <small>ID: {{ document.id }}</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>{{ document.original_filename }}</td>
+
+                    <td>
+                        {{ document.file_size|filesizeformat }}
+                    </td>
+
+                    <td>
+                        {% if document.uploaded_by %}
+                            {{ document.uploaded_by.full_name }}
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </td>
+
+                    <td>{{ document.created_at|date:"d M Y" }}</td>
+
+                    <td>
+                        {% if document.is_active %}
+                            <span class="management-status approved-status">
+                                <span></span> Active
+                            </span>
+                        {% else %}
+                            <span class="management-status inactive-status">
+                                <span></span> Inactive
+                            </span>
+                        {% endif %}
+                    </td>
+
+
+                    <td>
+                        <div class="pdf-action-buttons">
+
+                            <!-- EDIT -->
+                            <a href="{% url 'admin_pdf_edit' document.id %}"
+                            class="pdf-action-btn edit"
+                            title="Edit PDF">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <!-- ACTIVATE / DEACTIVATE -->
+                            <form method="POST"
+                                action="{% url 'admin_pdf_toggle_status' document.id %}">
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="pdf-action-btn {% if document.is_active %}deactivate{% else %}activate{% endif %}"
+                                        title="{% if document.is_active %}Deactivate{% else %}Activate{% endif %}"
+                                        onclick="return confirm('{% if document.is_active %}Deactivate{% else %}Activate{% endif %} this PDF?');">
+
+                                    {% if document.is_active %}
+                                        <i class="bi bi-pause-circle"></i>
+                                    {% else %}
+                                        <i class="bi bi-play-circle"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+
+                            <!-- DELETE -->
+                            <form method="POST"
+                                action="{% url 'admin_pdf_delete' document.id %}"
+                                onsubmit="return confirm('Permanently delete this PDF and all its assignments? This cannot be undone.');">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="pdf-action-btn delete"
+                                        title="Delete PDF">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7">
+                        <div class="users-empty-state">
+                            <div>
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </div>
+                            <h6>No PDFs found</h6>
+                            <p>Upload your first PDF document.</p>
+
+                            <a href="{% url 'admin_pdf_upload' %}">
+                                Upload PDF
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% if documents.has_other_pages %}
+
+    <div class="users-pagination">
+
+        <span class="pagination-info">
+            Page {{ documents.number }} of {{ documents.paginator.num_pages }}
+        </span>
+
+        <div class="pagination-controls">
+
+            {% if documents.has_previous %}
+                <a class="pagination-btn"
+                   href="?search={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ documents.previous_page_number }}">
+                    Previous
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">Previous</span>
+            {% endif %}
+
+            {% if documents.has_next %}
+                <a class="pagination-btn"
+                   href="?search={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ documents.next_page_number }}">
+                    Next
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">Next</span>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

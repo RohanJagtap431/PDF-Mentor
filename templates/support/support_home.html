@@ -1,0 +1,358 @@
+
+{% extends "base.html" %}
+
+{% block title %}Help & Support | PDF Mentor{% endblock %}
+{% block page_heading %}Help & Support{% endblock %}
+
+{% block extra_css %}
+<style>
+.support-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.support-hero {
+    background: linear-gradient(120deg, #1e2765, #6040d5);
+    color: #fff;
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+}
+
+.support-hero h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.support-hero p {
+    color: #e0e7ff;
+    margin: 0;
+}
+
+.support-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 22px;
+    align-items: start;
+}
+
+.support-panel {
+    background: #fff;
+    border: 1px solid #e8eaf2;
+    border-radius: 16px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.support-panel h4 {
+    font-size: 18px;
+    font-weight: 750;
+    color: #172033;
+    margin-bottom: 5px;
+}
+
+.support-muted {
+    color: #718096;
+    font-size: 13px;
+}
+
+.support-ticket {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid #edf0f6;
+    border-radius: 13px;
+    text-decoration: none;
+    color: #172033;
+    margin-top: 13px;
+    transition: .2s ease;
+}
+
+.support-ticket:hover {
+    border-color: #7665e8;
+    background: #fafaff;
+    transform: translateY(-2px);
+    color: #172033;
+}
+
+.ticket-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: #efedff;
+    color: #6554d9;
+    font-size: 21px;
+}
+
+.ticket-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.ticket-details strong {
+    display: block;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.ticket-details small {
+    color: #8190a5;
+    font-size: 12px;
+}
+
+.ticket-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.ticket-open {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.ticket-closed {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.new-ticket-form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 17px;
+}
+
+.new-ticket-form label {
+    font-size: 13px;
+    font-weight: 650;
+    color: #344054;
+}
+
+.new-ticket-form input,
+.new-ticket-form textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid #dfe4ed;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    color: #263247;
+}
+
+.new-ticket-form input:focus,
+.new-ticket-form textarea:focus {
+    border-color: #7163df;
+    box-shadow: 0 0 0 3px rgba(113, 99, 223, .1);
+}
+
+.new-ticket-form textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+.support-submit {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(120deg, #315eea, #7134d8);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.support-submit:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+}
+
+.support-empty {
+    text-align: center;
+    padding: 35px 15px;
+    color: #718096;
+}
+
+.support-empty i {
+    font-size: 38px;
+    color: #9ba6ba;
+}
+
+.support-empty h5 {
+    color: #263247;
+    font-weight: 700;
+    margin-top: 12px;
+}
+
+.support-note {
+    background: #f3f4ff;
+    color: #4d4b8d;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+    .support-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .support-hero {
+        padding: 22px 18px;
+    }
+
+    .support-hero h2 {
+        font-size: 23px;
+    }
+
+    .support-panel {
+        padding: 17px;
+    }
+
+    .support-ticket {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .ticket-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .ticket-status {
+        font-size: 10px;
+        padding: 4px 7px;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="support-page">
+
+    <section class="support-hero">
+        <h2><i class="bi bi-headset"></i> Help & Support</h2>
+        <p>Have a question or facing an issue? Send us a message. Our support team will help you.</p>
+    </section>
+
+
+    <div class="support-layout">
+
+        <!-- CONVERSATION HISTORY -->
+        <section class="support-panel">
+
+            <h4>My Conversations</h4>
+            <p class="support-muted">
+                View your previous support conversations and replies.
+            </p>
+
+            {% for ticket in tickets %}
+
+                <a href="{% url 'support_conversation' ticket.id %}"
+                   class="support-ticket">
+
+                    <div class="ticket-icon">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+
+                    <div class="ticket-details">
+                        <strong>{{ ticket.subject }}</strong>
+                        <small>
+                            Ticket #{{ ticket.id }} ·
+                            {{ ticket.updated_at|date:"d M Y, h:i A" }}
+                        </small>
+                    </div>
+
+                    {% if ticket.status == "open" %}
+                        <span class="ticket-status ticket-open">Open</span>
+                    {% else %}
+                        <span class="ticket-status ticket-closed">Closed</span>
+                    {% endif %}
+
+                </a>
+
+            {% empty %}
+
+                <div class="support-empty">
+                    <i class="bi bi-chat-square-text"></i>
+                    <h5>No conversations yet</h5>
+                    <p>Start a new conversation with our support team.</p>
+                </div>
+
+            {% endfor %}
+
+        </section>
+
+
+        <!-- NEW CONVERSATION -->
+        <section class="support-panel">
+
+            <h4><i class="bi bi-plus-circle"></i> New Conversation</h4>
+
+            <p class="support-muted">
+                Tell us what you need help with.
+            </p>
+
+            <form method="POST"
+                  action="{% url 'create_ticket' %}"
+                  class="new-ticket-form">
+
+                {% csrf_token %}
+
+                <div>
+                    <label for="subject">Subject</label>
+
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        maxlength="200"
+                        placeholder="e.g. PDF is not opening"
+                    >
+                </div>
+
+                <div>
+                    <label for="message">Your Message</label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        maxlength="10000"
+                        required
+                        placeholder="Describe your problem here..."
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="support-submit">
+                    <i class="bi bi-send-fill"></i>
+                    Send Message
+                </button>
+
+            </form>
+
+            <div class="support-note">
+                <i class="bi bi-info-circle"></i>
+                Please do not share your password or other sensitive account information in support messages.
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}
