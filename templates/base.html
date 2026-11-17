@@ -17,6 +17,14 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="apple-touch-icon"
+        href="{% static 'pwa/icons/icon-192.png' %}">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -321,6 +329,19 @@
 
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- PWA Service Worker -->
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+            navigator.serviceWorker.register(
+                "{% static 'pwa/service-worker.js' %}"
+            ).catch(function (error) {
+                console.error("Service Worker Error:", error);
+            });
+        });
+    }
+</script>
 
 {% block extra_js %}{% endblock %}
 
